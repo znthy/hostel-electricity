@@ -1,0 +1,35 @@
+
+## If something looks wrong
+
+- *"Wrong username or password"*: check for a typo. Usernames aren't
+  case-sensitive. Otherwise ask the treasurer for a reset.
+- *My payment is still pending*: the treasurer needs to approve it. Nudge them.
+- *Upload failed*: try a smaller screenshot or a better connection and submit
+  again. You won't be charged twice, since duplicates are caught.
+- *The screen says it can't reach the server*: check your data and reload.
+
+Tell me about bugs and I'll fix them.
+
+---
+
+## Setup notes (for whoever hosts this)
+
+The app is plain HTML, CSS and JavaScript. All the money rules live in the
+Supabase database, so the SQL (tables, row-level security, functions, storage
+policies) must be set up there. **It is not in this folder. Keep a copy of it
+alongside the code.**
+
+1. Put your Supabase project URL and the **public (anon) key** in `config.js`.
+   Never use the `service_role` / secret key here.
+2. In Supabase, turn off email confirmation (members sign in with usernames).
+3. Create a private storage bucket called `receipts` with a size limit and
+   images only.
+4. Host the folder on any static host (Netlify, Vercel, GitHub Pages...).
+5. Set response headers on your host (a `<meta>` tag can't do these):
+   `Content-Security-Policy: frame-ancestors 'none'` (stops the app being framed
+   for clickjacking), `X-Content-Type-Options: nosniff`, and
+   `Referrer-Policy: no-referrer`. Netlify: a `_headers` file. Vercel: `vercel.json`.
+6. Optional hardening: `index.html` pins supabase-js to a fixed version. Add an
+   `integrity="sha384-..."` hash to that script tag and to the Font Awesome link
+   (`openssl dgst -sha384 -binary FILE | openssl base64 -A`).
+
